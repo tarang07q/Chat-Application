@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 import { User, AuthResponse } from '@/types';
 import { apiClient } from '@/services/api';
 
@@ -14,13 +13,13 @@ interface AuthState {
   register: (username: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   setUser: (user: User | null) => void;
+  setToken: (token: string) => void;
   clearError: () => void;
   checkAuth: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
+  (set) => ({
       user: null,
       isAuthenticated: false,
       isLoading: false,
@@ -101,6 +100,13 @@ export const useAuthStore = create<AuthState>()(
         set({ user, isAuthenticated: !!user });
       },
 
+      setToken: (token: string) => {
+        // Store token in apiClient
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('accessToken', token);
+        }
+      },
+
       clearError: () => {
         set({ error: null });
       },
@@ -123,14 +129,6 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false,
           });
         }
-      },
-    }),
-    {
-      name: 'auth-storage',
-      partialize: (state) => ({
-        user: state.user,
-        isAuthenticated: state.isAuthenticated,
-      }),
-    }
-  )
+      }
+  })
 );
