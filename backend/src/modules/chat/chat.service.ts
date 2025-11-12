@@ -1,4 +1,4 @@
-import { Conversation, Message, User } from '../../database';
+import { Conversation, Message } from '../../database';
 import { AppError } from '../../middlewares/errorHandler';
 import mongoose from 'mongoose';
 import { socketService } from '../../sockets';
@@ -29,13 +29,13 @@ export class ChatService {
 
     if (!conversation) {
       // Create new conversation
-      conversation = await Conversation.create({
+      const newConversation = await Conversation.create({
         type: 'private',
         participants: [userId, otherUserId],
         createdBy: userId,
       });
 
-      conversation = await Conversation.findById(conversation._id)
+      conversation = await Conversation.findById(newConversation._id)
         .populate('participants', 'username email avatarUrl status lastActive')
         .lean();
     }

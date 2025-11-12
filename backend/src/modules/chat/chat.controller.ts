@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { chatService } from './chat.service';
 import { asyncHandler } from '../../middlewares/errorHandler';
 import { AuthRequest } from '../../middlewares/auth';

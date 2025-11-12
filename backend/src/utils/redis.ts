@@ -69,7 +69,6 @@ export class PresenceManager {
   }
 
   async getOnlineUsers(userIds: string[]): Promise<string[]> {
-    const client = getRedisClient();
     const onlineUsers: string[] = [];
     
     for (const userId of userIds) {

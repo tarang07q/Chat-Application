@@ -62,6 +62,8 @@ export class SocketService {
 
         socket.userId = decoded.id;
         socket.username = decoded.username;
+        socket.data.userId = decoded.id;
+        socket.data.username = decoded.username;
         
         next();
       } catch (error) {
@@ -181,7 +183,9 @@ export class SocketService {
     if (!this.io) return [];
     
     const sockets = await this.io.in(`conversation:${conversationId}`).fetchSockets();
-    return sockets.map(s => (s as AuthenticatedSocket).userId!).filter(Boolean);
+    return sockets
+      .map(s => (s.data as { userId?: string })?.userId)
+      .filter((userId): userId is string => Boolean(userId));
   }
 }
 
